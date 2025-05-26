@@ -1,39 +1,86 @@
-# MiniBee
+# MiniBee: Radar-Based Presence Sensor
 
-**MiniBee** is a presence and motion sensor designed for room-scale awareness. It combines the Arduino MKR WiFi 1010 with the Infineon BGT60LTR11AIP radar shield (`SHIELDAUTONOMBGT60TOBO1`) to detect motion with directionality using edge-based logic.
+MiniBee is a compact presence detector built using the Arduino MKR WiFi 1010 and the Infineon BGT60LTR11AIP radar sensor. It’s designed for real-time interaction systems — detecting motion and simulating presence through a simple logic signal. It’s ideal for installations, responsive spaces, and integration with creative tools like TouchDesigner.
 
-## Features
+---
 
-- Real-time detection of motion and direction (approaching/departing)
-- Based on Infineon’s BGT60LTR11AIP radar
-- Adapted from Infineon’s official example for embedded integration
-- Designed to integrate with custom presence systems or cloud-connected services
-- Minimalist 3D-printable case for compact indoor installation
+## 🚀 Features
 
-## Hardware
+* **Radar presence detection** (BGT60LTR11AIP)
+* **Edge logic** for maintaining presence state
+* **Serial communication** of logic signal (`1` = presence, `0` = no presence)
+* **Integration with TouchDesigner** via `.toe` file
+* **Custom 3D-printed case**
 
-- **MCU**: Arduino MKR WiFi 1010
-- **Radar**: Infineon BGT60LTR11AIP on SHIELDAUTONOMBGT60TOBO1
-- **Power**: USB or LiPo via MKR
-- **Case**: Printed on Prusa (15mm height, 15% infill, PLA/ABS)
+---
+
+## 🧠 How It Works
+
+The radar detects motion. If motion is detected, the device outputs a `1`. If no motion is detected for 15 seconds, it outputs a `0`. This creates a presence-like behavior based on movement.
+
+This logic is implemented in the firmware and also interpreted in the TouchDesigner patch.
+
+---
+
+## 🛠️ Hardware
+
+* **MCU**: Arduino MKR WiFi 1010
+* **Radar Sensor**: Infineon BGT60LTR11AIP (mounted via `SHIELDAUTONOMBGT60TOBO1`)
+* **Power**: USB / LiPo (optional)
+* **Case**: Custom 3D-printed (STL provided)
 
 ### Wiring
 
-| Radar Pin | Arduino Pin |
-|-----------|-------------|
-| GND       | GND         |
-| VIN       | 3.3V or 5V  |
-| TD        | 15          |
-| PD        | 16          |
+| Shield Pin | Arduino Pin | Description      |
+| ---------- | ----------- | ---------------- |
+| TD         | D15         | Target Detect    |
+| PD         | D16         | Phase Detect     |
+| VIN        | VCC         | Power 3.3V or 5V |
+| GND        | GND         | Ground           |
 
-## Firmware
+---
 
-Adapted from Infineon's `motionDetection` example (MIT licensed).
+## 📂 Repository Structure
 
-Path: [`firmware/motion_detection/motionDetection.ino`](firmware/motion_detection/motionDetection.ino)
+```
+minibee/
+├── firmware/
+│   └── motion_detection/
+│       ├── motionDetection.ino         # Main radar firmware
+│       └── README.md
+├── hardware/
+│   └── case_3d_print/
+│       └── minibee_case_v1.stl         # 3D printable case
+├── touchdesigner/
+│   └── minibee_presence_reader.toe     # Reads serial and outputs logic signal
+├── LICENSE
+├── .gitignore
+└── README.md
+```
 
-The firmware logs movement status via Serial and is optimized for local edge detection.
+---
 
-## License
+## 🎛️ TouchDesigner Integration
 
-MIT License © Infineon Technologies AG, with modifications for MiniBee.
+The included `.toe` patch reads serial input (`1` or `0`) and outputs a logic signal as a CHOP. It maintains a "presence" state for 15 seconds after the last motion detection.
+
+### File
+
+* `touchdesigner/minibee_presence_reader.toe`
+
+### Behavior
+
+| Serial Value | CHOP Output | Description                       |
+| ------------ | ----------- | --------------------------------- |
+| `1`          | 1           | Motion detected (presence active) |
+| `0`          | 0           | No motion (after 15s timeout)     |
+
+This is ideal for driving installations, triggers, lights, or generative visuals.
+
+---
+
+## 📎 License
+
+MIT — Feel free to use, adapt, and build upon it.
+
+Copyright 2025
